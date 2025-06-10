@@ -2,8 +2,8 @@ package com.rest.rest.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-// import com.fasterxml.jackson.annotation.JsonManagedReference;
+// import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -25,8 +25,8 @@ public class School {
         mappedBy = "school",
         cascade = CascadeType.ALL
     )
-    // @JsonManagedReference
-    @JsonBackReference
+    @JsonManagedReference
+    // @JsonBackReference
     private List<Student> student;
 
     public School(){

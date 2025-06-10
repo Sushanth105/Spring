@@ -3,11 +3,15 @@ package com.rest.rest.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.rest.rest.model.School;
 import com.rest.rest.model.Student;
 import com.rest.rest.repository.StudentRepository;
+import com.rest.rest.dto.StudentRequestDto;
+import com.rest.rest.dto.StudentResponseDto;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-record User(String name,int age) {
+record User(String name, int age) {
 }
 
 record Todos(int userId, int id, String title, boolean completed) {
@@ -32,6 +35,17 @@ public class StudentController {
     @Autowired
     private StudentRepository sRepository;
 
+    public StudentResponseDto toStudentDto(Student student) {
+        return new StudentResponseDto(student.getId(), student.getFirstName(), student.getLastName(), student.getAge(),
+                student.getEmail(), student.getSchool().getId());
+    }
+
+    public Student toStudent(StudentRequestDto studentDto) {
+        School school = new School();
+        school.setId(studentDto.schoolId());
+        return new Student(studentDto.firstName(), studentDto.lastName(), studentDto.email(), studentDto.age(), school);
+    }
+
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public String helo() {
@@ -39,46 +53,58 @@ public class StudentController {
     }
 
     @GetMapping("/json")
-    public ResponseEntity<List<User>> json(){
+    public ResponseEntity<List<User>> json() {
         return new ResponseEntity<>(
-            List.of(
-            new User("Sushanth", 19),
-            new User("Sushanth", 19)
-            ),HttpStatus.OK);
+                List.of(
+                        new User("Sushanth", 19),
+                        new User("Sushanth", 19)),
+                HttpStatus.OK);
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<List<Todos>> fetch(){
+    public ResponseEntity<List<Todos>> fetch() {
         RestTemplate restTemplate = new RestTemplate();
         Todos[] res = restTemplate.getForObject("https://jsonplaceholder.typicode.com/todos", Todos[].class);
         List<Todos> response = Arrays.asList(res);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/student")
-    public ResponseEntity<Student> adding(@RequestBody Student student) {
-    
-        return new ResponseEntity<>(sRepository.save(student),HttpStatus.OK);
+    public ResponseEntity<StudentResponseDto> adding(@RequestBody StudentRequestDto studentDto) {
+
+        Student student = sRepository.save(toStudent(studentDto));
+        return new ResponseEntity<>(toStudentDto(student), HttpStatus.OK);
     }
 
     @PostMapping("/students")
-    public ResponseEntity<List<Student>> findAll() {
-        
-        return new ResponseEntity<>(sRepository.findAll(),HttpStatus.OK);
+    public ResponseEntity<List<StudentResponseDto>> findAll() {
+
+        List<StudentResponseDto> students = sRepository.findAll().stream().map(this::toStudentDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @PostMapping("/student/{student_id}")
-    public Student findById(@PathVariable int student_id) {
-        
-        return sRepository.findById(student_id).orElse(new Student());
+    public ResponseEntity<?> findById(@PathVariable int student_id) {
+        var student = sRepository.findById(student_id);
+
+        if (student.isEmpty()) {
+            return new ResponseEntity<>("There is no data with student id " + student_id, HttpStatus.NOT_FOUND);
+        }
+        System.out.println(student.get().getSchool().getName());
+        return new ResponseEntity<>(toStudentDto(student.get()), HttpStatus.OK);
     }
-    
+
     @PostMapping("/students/search/{student_name}")
-    public List<Student> findByName(@PathVariable String student_name) {
-        
-        return sRepository.findByFirstName(student_name);
+    public ResponseEntity<?> findByName(@PathVariable String student_name) {
+        List<StudentResponseDto> students = sRepository.findByFirstName(student_name).stream().map(this::toStudentDto).toList();
+        if(students.isEmpty()){
+            return new ResponseEntity<>("There is no data with student name " + student_name, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(students,HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/student/{student_id}")
     public void deleteById(@PathVariable int student_id) {
         sRepository.deleteById(student_id);

@@ -1,8 +1,7 @@
 package com.rest.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-// import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+// import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,18 +34,19 @@ public class Student {
     @JoinColumn(
         name = "school_id"
     )
-    // @JsonBackReference
-    @JsonManagedReference
+    @JsonBackReference
+    // @JsonManagedReference
     private School school;
 
     public Student() {
     }
 
-    public Student(String firstName, String lastName, String email, int age) {
+    public Student(String firstName, String lastName, String email, int age, School school) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.age = age;
+        this.school = school;
     }
 
     public Integer getId() {
