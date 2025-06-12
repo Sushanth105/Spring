@@ -3,15 +3,12 @@ package com.rest.rest.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.rest.rest.model.School;
-import com.rest.rest.model.Student;
-import com.rest.rest.repository.StudentRepository;
+import com.rest.rest.service.StudentService;
 import com.rest.rest.dto.StudentRequestDto;
 import com.rest.rest.dto.StudentResponseDto;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,18 +30,7 @@ record Todos(int userId, int id, String title, boolean completed) {
 public class StudentController {
 
     @Autowired
-    private StudentRepository sRepository;
-
-    public StudentResponseDto toStudentDto(Student student) {
-        return new StudentResponseDto(student.getId(), student.getFirstName(), student.getLastName(), student.getAge(),
-                student.getEmail(), student.getSchool().getId());
-    }
-
-    public Student toStudent(StudentRequestDto studentDto) {
-        School school = new School();
-        school.setId(studentDto.schoolId());
-        return new Student(studentDto.firstName(), studentDto.lastName(), studentDto.email(), studentDto.age(), school);
-    }
+    private StudentService studentService;
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
@@ -72,33 +58,32 @@ public class StudentController {
     @PostMapping("/student")
     public ResponseEntity<StudentResponseDto> adding(@RequestBody StudentRequestDto studentDto) {
 
-        Student student = sRepository.save(toStudent(studentDto));
-        return new ResponseEntity<>(toStudentDto(student), HttpStatus.OK);
+        return new ResponseEntity<>(studentService.saveStudent(studentDto),HttpStatus.OK);
     }
 
-    @PostMapping("/students")
+    @GetMapping("/students")
     public ResponseEntity<List<StudentResponseDto>> findAll() {
 
-        List<StudentResponseDto> students = sRepository.findAll().stream().map(this::toStudentDto)
-                .collect(Collectors.toList());
+        List<StudentResponseDto> students = studentService.findStudentAll();
 
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @PostMapping("/student/{student_id}")
+    @GetMapping("/student/{student_id}")
     public ResponseEntity<?> findById(@PathVariable int student_id) {
-        var student = sRepository.findById(student_id);
 
-        if (student.isEmpty()) {
-            return new ResponseEntity<>("There is no data with student id " + student_id, HttpStatus.NOT_FOUND);
+        var student = studentService.findStudentById(student_id);
+
+        if(student.isEmpty()){
+            return new ResponseEntity<>("There is no Student with student id " + student_id,HttpStatus.NOT_FOUND);
         }
-        System.out.println(student.get().getSchool().getName());
-        return new ResponseEntity<>(toStudentDto(student.get()), HttpStatus.OK);
+
+        return new ResponseEntity<>(student.get(), HttpStatus.OK);
     }
 
-    @PostMapping("/students/search/{student_name}")
+    @GetMapping("/students/search/{student_name}")
     public ResponseEntity<?> findByName(@PathVariable String student_name) {
-        List<StudentResponseDto> students = sRepository.findByFirstName(student_name).stream().map(this::toStudentDto).toList();
+        List<StudentResponseDto> students = studentService.findStudentByName(student_name);
         if(students.isEmpty()){
             return new ResponseEntity<>("There is no data with student name " + student_name, HttpStatus.NOT_FOUND);
         }
@@ -106,7 +91,8 @@ public class StudentController {
     }
 
     @DeleteMapping("/student/{student_id}")
-    public void deleteById(@PathVariable int student_id) {
-        sRepository.deleteById(student_id);
+    public ResponseEntity<String>  deleteById(@PathVariable Integer student_id) {
+        studentService.deleteStudentById(student_id);
+        return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
     }
 }

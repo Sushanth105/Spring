@@ -2,6 +2,7 @@ package com.rest.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 // import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -27,7 +28,7 @@ public class Student {
     private String email;
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private StudentProfile studentProfile;
 
     @ManyToOne

@@ -1,6 +1,6 @@
 package com.rest.rest.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,15 +20,16 @@ public class StudentProfile {
 
     @OneToOne
     @JoinColumn(name = "student_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Student student;
 
     public StudentProfile() {
 
     }
 
-    public StudentProfile(String bio) {
+    public StudentProfile(String bio , Student student) {
         this.bio = bio;
+        this.student = student;
     }
 
     public Integer getId() {
