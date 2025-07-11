@@ -15,6 +15,8 @@ import com.sushanth.dream_shop.models.Category;
 import com.sushanth.dream_shop.models.Product;
 import com.sushanth.dream_shop.services.mappers.ProductMapper;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ProductService {
 
@@ -27,6 +29,7 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Transactional
     public ProductResponse addProduct(AddProductRequest addProductRequest) {
         // checking if category present if not present add it
         // here orElse(...) — eager evaluation and orElseGet(...) — lazy evaluation
@@ -38,6 +41,7 @@ public class ProductService {
         return productMapper.productToProductResponse(productRepository.save(product));
     }
 
+    @Transactional
     public ProductResponse updateProduct(UpdateProductRequest updateProductRequest) {
         Category category = categoryRepository.findByName(updateProductRequest.categoryName())
                 .orElseGet(() -> categoryRepository.save(new Category(updateProductRequest.categoryName())));
@@ -49,12 +53,14 @@ public class ProductService {
         return productMapper.productToProductResponse(product);
     }
 
+    @Transactional
     public ProductResponse getProductById(Integer id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
         return productMapper.productToProductResponse(product);
     }
 
+    @Transactional
     public List<ProductResponse> getAllProducts() {
         var products = productRepository.findAll().stream().map(productMapper::productToProductResponse).toList();
         if (products.isEmpty()) {
@@ -64,6 +70,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
     public List<ProductResponse> getAllProductsByCategory(String categoryName) {
         var products = productRepository.findByCategoryName(categoryName).stream()
                 .map(productMapper::productToProductResponse)
@@ -76,6 +83,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
     public List<ProductResponse> getAllProductsByBrand(String brand) {
         var products = productRepository.findByBrand(brand).stream().map(productMapper::productToProductResponse)
                 .toList();
@@ -88,6 +96,7 @@ public class ProductService {
 
     }
 
+    @Transactional
     public List<ProductResponse> getAllProductsByCategoryAndBrand(String categoryName, String brand) {
         var products = productRepository.findByCategoryNameAndBrand(categoryName, brand).stream()
                 .map(productMapper::productToProductResponse).toList();
@@ -100,6 +109,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
     public List<ProductResponse> getAllProductsByName(String name) {
         var products =  productRepository.findByName(name).stream().map(productMapper::productToProductResponse).toList();
 
@@ -111,6 +121,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
     public List<ProductResponse> getAllProductsByBrandAndName(String brand, String name) {
         var products = productRepository.findByBrandAndName(brand, name).stream()
                 .map(productMapper::productToProductResponse)

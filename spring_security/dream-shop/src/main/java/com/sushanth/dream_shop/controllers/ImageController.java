@@ -41,6 +41,25 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ResponseApi> getImagesByProductId(@PathVariable Integer productId) {
+        try {
+            return ResponseEntity.ok(new ResponseApi(imageService.getImageByProductId(productId), "Found!!"));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"),HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<ResponseApi> getImagesById(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(new ResponseApi(imageService.getImageById(id), "Found!!"));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"),HttpStatus.NOT_FOUND);
+        }
+    }
+    
+
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable Integer id) {
         try {

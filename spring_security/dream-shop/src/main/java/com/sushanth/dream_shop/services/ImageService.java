@@ -1,5 +1,7 @@
 package com.sushanth.dream_shop.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,14 @@ public class ImageService {
         Image image = imageRepository.findById(id)
                 .orElseThrow(() -> new ImageNotFoundException("Image with id " + id + " not found"));
         return imageMapper.imageToDownloadImageResponse(image);
+    }
+
+    public List<ImageResponse> getImageByProductId(Integer productId){
+        List<ImageResponse> images = imageRepository.findByProductId(productId).stream().map(imageMapper::imageToImageResponse).toList();
+        if( images.isEmpty() ){
+            throw new ImageNotFoundException("Image with product id " + productId + " not found");
+        }
+        return images;
     }
 
     public void deleteImageById(Integer id) {

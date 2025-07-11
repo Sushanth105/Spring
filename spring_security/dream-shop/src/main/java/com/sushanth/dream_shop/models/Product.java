@@ -42,6 +42,10 @@ public class Product {
     @JsonManagedReference
     private List<Image> images;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<CartItem> cartItems;
+
     public Product(String name, String brand, BigDecimal price, Integer inventory, String description,
             Category category) {
         this.name = name;

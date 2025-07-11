@@ -1,6 +1,10 @@
 package com.sushanth.dream_shop.dtos.product.response;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.sushanth.dream_shop.dtos.category.response.CategoryResponse;
+import com.sushanth.dream_shop.dtos.image.response.ImageResponse;
 
 public record ProductResponse(
     Integer id,
@@ -9,7 +13,7 @@ public record ProductResponse(
     BigDecimal price,
     Integer inventory,
     String description,
-    Integer categoryId
+    CategoryResponse category,
+    List<ImageResponse> image
 ) {
-
 }
