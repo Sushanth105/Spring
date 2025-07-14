@@ -1,7 +1,6 @@
 package com.sushanth.dream_shop.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,111 +26,65 @@ public class ProductController {
 
     @PostMapping("")
     public ResponseEntity<ResponseApi> addProduct(@RequestBody AddProductRequest addProductRequest) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(productService.addProduct(addProductRequest), "Add success!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Add failed!!"),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.ok(new ResponseApi(productService.addProduct(addProductRequest), "Add success!!"));
     }
 
     @PutMapping("")
     public ResponseEntity<ResponseApi> updateProduct(@RequestBody UpdateProductRequest updateProductRequest) {
-        try {
-            return ResponseEntity
-                    .ok(new ResponseApi(productService.updateProduct(updateProductRequest), "Update success!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Update failed!!"),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity
+                .ok(new ResponseApi(productService.updateProduct(updateProductRequest), "Update success!!"));
     }
 
     @GetMapping("")
     public ResponseEntity<ResponseApi> getAllProduct() {
-        try {
-            return ResponseEntity.ok(new ResponseApi(productService.getAllProducts(), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(productService.getAllProducts(), "Found!!"));
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<ResponseApi> getProductById(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(productService.getProductById(id), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(productService.getProductById(id), "Found!!"));
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<ResponseApi> getAllProductByName(@PathVariable String name) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(productService.getAllProductsByName(name), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(productService.getAllProductsByName(name), "Found!!"));
     }
 
     @GetMapping("/brand/{brand}")
     public ResponseEntity<ResponseApi> getAllProductByBrand(@PathVariable String brand) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(productService.getAllProductsByBrand(brand), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(productService.getAllProductsByBrand(brand), "Found!!"));
     }
 
     @GetMapping("/brandAndName")
     public ResponseEntity<ResponseApi> getAllProductByBrandAndName(@RequestParam String brand,
             @RequestParam String name) {
-        try {
-            return ResponseEntity
-                    .ok(new ResponseApi(productService.getAllProductsByBrandAndName(brand, name), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity
+                .ok(new ResponseApi(productService.getAllProductsByBrandAndName(brand, name), "Found!!"));
     }
 
     @GetMapping("/category/{category}")
     public ResponseEntity<ResponseApi> getAllProductByCategory(@PathVariable String category) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(productService.getAllProductsByCategory(category), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(productService.getAllProductsByCategory(category), "Found!!"));
     }
 
     @GetMapping("/categoryAndBrand")
     public ResponseEntity<ResponseApi> getAllProductByCategoryAndBrand(@RequestParam String category,
             @RequestParam String brand) {
-        try {
-            return ResponseEntity
-                    .ok(new ResponseApi(productService.getAllProductsByCategoryAndBrand(category, brand), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity
+                .ok(new ResponseApi(productService.getAllProductsByCategoryAndBrand(category, brand), "Found!!"));
     }
 
     @GetMapping("/count/brandAndName")
     public ResponseEntity<ResponseApi> countProductsByBrandAndName(@RequestParam String brand,
             @RequestParam String name) {
-        try {
-            return ResponseEntity
-                    .ok(new ResponseApi(productService.countProductsByBrandAndName(brand, name), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity
+                .ok(new ResponseApi(productService.countProductsByBrandAndName(brand, name), "Found!!"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseApi> deleteProductById(@PathVariable Integer id) {
-        try {
-            productService.deleteProductById(id);
-            return ResponseEntity.ok(new ResponseApi(null, "Delete success!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Delete failed!!"), HttpStatus.NOT_FOUND);
-        }
+        productService.deleteProductById(id);
+        return ResponseEntity.ok(new ResponseApi(null, "Delete success!!"));
 
     }
 

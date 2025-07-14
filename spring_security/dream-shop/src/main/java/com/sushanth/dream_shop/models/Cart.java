@@ -27,11 +27,23 @@ public class Cart {
     private Integer id;
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     private Set<CartItem> cartItems;
 
     public Cart(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
+
+    public void updateTotalAmount(){
+
+        if(this.cartItems == null || this.cartItems.isEmpty()){
+            this.totalAmount = BigDecimal.ZERO;
+        }
+
+        this.totalAmount=this.cartItems.stream().map((item) -> {
+            return item.getTotalPrice();
+        }).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }

@@ -13,9 +13,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class CartItem {
 
@@ -42,38 +44,14 @@ public class CartItem {
         this.unitPrice = unitPrice;
         this.product = product;
         this.cart = cart;
-        setTotalPrice();
     }
 
-    public void setTotalPrice(){
+    public void updateTotalPrice(){
         if (this.unitPrice != null && this.quantity != null) {
             this.totalPrice = this.unitPrice.multiply(BigDecimal.valueOf(this.quantity));
         } else {
             this.totalPrice = BigDecimal.ZERO;
         }
     }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-        setTotalPrice();
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-        setTotalPrice();
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
     
 }

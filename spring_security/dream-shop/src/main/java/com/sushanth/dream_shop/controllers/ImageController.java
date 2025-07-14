@@ -32,74 +32,48 @@ public class ImageController {
 
     @PostMapping("")
     public ResponseEntity<ResponseApi> saveIamge(@RequestParam Integer productId, @RequestPart MultipartFile file) {
-        try {
-            ImageResponse imageResponse = imageService.saveImage(productId,file);
-            return new ResponseEntity<>(new ResponseApi(imageResponse, "Upload success!!"), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Upload failed!!"),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ImageResponse imageResponse = imageService.saveImage(productId, file);
+        return new ResponseEntity<>(new ResponseApi(imageResponse, "Upload success!!"), HttpStatus.OK);
     }
 
     @GetMapping("/product/{productId}")
     public ResponseEntity<ResponseApi> getImagesByProductId(@PathVariable Integer productId) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(imageService.getImageByProductId(productId), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"),HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(imageService.getImageByProductId(productId), "Found!!"));
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<ResponseApi> getImagesById(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(new ResponseApi(imageService.getImageById(id), "Found!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Not Found!!"),HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(new ResponseApi(imageService.getImageById(id), "Found!!"));
     }
-    
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable Integer id) {
-        try {
-            DownloadImageResponse downloadImageResponse = imageService.getImageById(id);
-            // for downloading the image
-            // return ResponseEntity.ok()
-            //         .contentType(MediaType.parseMediaType(downloadImageResponse.fileType()))
-            //         .header(HttpHeaders.CONTENT_DISPOSITION,
-            //                 "attachment; filename=\"" + downloadImageResponse.fileName() + "\"")
-            //         .body(downloadImageResponse.image());
-            
-            // for view the image
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(downloadImageResponse.fileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "inline; filename=\"" + downloadImageResponse.fileName() + "\"")
-                    .body(downloadImageResponse.image());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // No image, just null
-        }
+        DownloadImageResponse downloadImageResponse = imageService.getImageById(id);
+        // for downloading the image
+        // return ResponseEntity.ok()
+        // .contentType(MediaType.parseMediaType(downloadImageResponse.fileType()))
+        // .header(HttpHeaders.CONTENT_DISPOSITION,
+        // "attachment; filename=\"" + downloadImageResponse.fileName() + "\"")
+        // .body(downloadImageResponse.image());
+
+        // for view the image
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(downloadImageResponse.fileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"" + downloadImageResponse.fileName() + "\"")
+                .body(downloadImageResponse.image());
     }
 
     @PutMapping("")
     public ResponseEntity<ResponseApi> updateImage(@RequestBody UpdateImageRequest updateImageRequest) {
-        try {
-            return ResponseEntity
-                    .ok(new ResponseApi(imageService.updateImage(updateImageRequest), "Updated success!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Update failed!"),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity
+                .ok(new ResponseApi(imageService.updateImage(updateImageRequest), "Updated success!!"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseApi> deleteImage(@PathVariable Integer id) {
-        try {
-            imageService.deleteImageById(id);
-            return ResponseEntity.ok(new ResponseApi(null,"Delete Success!!"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseApi(e.getMessage(), "Delete failed!"),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        imageService.deleteImageById(id);
+        return ResponseEntity.ok(new ResponseApi(null, "Delete Success!!"));
     }
 
 }
